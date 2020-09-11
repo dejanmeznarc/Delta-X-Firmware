@@ -34,6 +34,8 @@ void GCodeReceiverClass::Init(vector<String>* gCodeQueue, HardwareSerial* serial
 
 void GCodeReceiverClass::Execute()
 {
+
+	// Read serial char by char
 	while (ReceiveSerial->available())
 	{
 		char inChar = (char)ReceiveSerial->read();
@@ -50,16 +52,19 @@ void GCodeReceiverClass::Execute()
 		}
 	}
 
+	// there is no newline
 	if (!isStringComplete)
 	{
 		if (receiveString.length() > 70)
 		{
+			Serial.println("debug > Gcomand too long, setting it to 0");
 			receiveString = "";
 		}
 		
 		return;
 	}
-		
+
+	// Is there G code?
 	if (receiveString[0] == 'M' || receiveString[0] == 'G')
 	{
 		GCodeQueue->push_back(receiveString);
@@ -68,8 +73,8 @@ void GCodeReceiverClass::Execute()
 		return;
 	}
 
+	// Special commands
 	int index = receiveString.indexOf(':');
-
 	if (index == -1)
 	{
 		if (receiveString == "IsDelta") ConnectionState.Connect();
@@ -106,6 +111,7 @@ void GCodeReceiverClass::Execute()
 		else if (keyString == "ESPIP") WifiSettings.IPWifi = valueString;
 	}
 
+	// Empty string
 	receiveString = "";
 	isStringComplete = false;
 }

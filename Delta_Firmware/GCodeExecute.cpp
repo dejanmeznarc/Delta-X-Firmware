@@ -37,6 +37,7 @@ void GCodeExecuteClass::Run()
 	String GcodeInProcessing = GCodeQueue->operator[](0);
 	vector<KeyValue> keyValues = getKeyValues(GcodeInProcessing);
 
+	// parse parameters
 	for (uint8_t i = 1; i < keyValues.size(); i++)
 	{
 		switch (keyValues[i].Key)
@@ -126,6 +127,8 @@ void GCodeExecuteClass::WhenFinishMove()
 
 void GCodeExecuteClass::checkAndRunFunction(KeyValue keyValue)
 {
+
+    // actualy run command
 	switch (keyValue.Key)
 	{
 	case 'G':
